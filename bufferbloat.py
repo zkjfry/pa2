@@ -17,8 +17,7 @@ from argparse import ArgumentParser
 
 from monitor import monitor_qlen
 import termcolor as T
-
-from pa2 import helper
+import helper
 
 import sys
 import os

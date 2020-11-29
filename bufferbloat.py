@@ -198,7 +198,7 @@ def bufferbloat():
     start_time = time()
     h1 = net.get('h1')
     h2 = net.get('h2')
-    stats = []
+    downloads = []
     while True:
         # do the measurement (say) 3 times.
         sleep(1)
@@ -207,16 +207,17 @@ def bufferbloat():
         if delta > args.time:
             break
         print("%.1fs left..." % (args.time - delta))
+        download = h2.popen('curl -o /dev/null -s -w %%{time_total} %s/http/index.html' % h1.IP()).communicate()[0]
+        downloads.append(float(download))
 
-        for i in range(3):
-            stat = h2.popen('curl -o /dev/null -s -w %%{time_total} %s/http/index.html' % h1.IP()).communicate()[0]
-            stats.append(float(stat))
-
+    f = open("%s/download.txt"%args.dir, "w")
+    f.writelines("\n"%f for download in downloads)
+    f.close()
     # TODO: compute average (and standard deviation) of the fetch
     # times.  You don't need to plot them.  Just note it in your
     # README and explain.
     with open(os.path.join(args.dir, 'measurements.txt'), 'w') as f:
-        f.write("Average: %lf, std deviation: %lf\n" % (helper.avg(stats), helper.stdev(stats)))
+        f.write("Average: %lf, std deviation: %lf\n" % (helper.avg(downloads), helper.stdev(downloads)))
 
     stop_tcpprobe()
     if qmon is not None:

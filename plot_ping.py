@@ -20,6 +20,16 @@ parser.add_argument('--freq',
                     type=int,
                     default=10)
 
+parser.add_argument('--down', '-d',
+                    help="Download times",
+                    type=float,
+                    default=10)
+
+parser.add_argument('--type',
+                    help="download or ping",
+                    type=str,
+                    default='ping')
+
 parser.add_argument('--out', '-o',
                     help="Output png file for the plot.",
                     default=None) # Will show the plot
@@ -43,27 +53,71 @@ def parse_ping(fname):
             break
     return ret
 
-m.rc('figure', figsize=(16, 6))
-fig = figure()
-ax = fig.add_subplot(111)
-for i, f in enumerate(args.files):
-    data = parse_ping(f)
-    if len(data) == 0:
-        print >>sys.stderr, "%s: error: no ping data"%(sys.argv[0])
-        sys.exit(1)
+def parse_download(fname):
+    ret = []
+    lines = open(fname).readlines()
+    num = 0
+    for line in lines:
+        if 'bytes from' not in line:
+            continue
+        try:
+            download = line.split(' ')[-2]
+            download = download.split('=')[1]
+            download = float(download)
+            ret.append([num, download])
+            num += 1
+        except:
+            break
+    return ret
 
-    xaxis = map(float, col(0, data))
-    start_time = xaxis[0]
-    xaxis = map(lambda x: (x - start_time) / args.freq, xaxis)
-    qlens = map(float, col(1, data))
+if args.type == "ping":
+    m.rc('figure', figsize=(16, 6))
+    fig = figure()
+    ax = fig.add_subplot(111)
+    for i, f in enumerate(args.files):
+        data = parse_ping(f)
+        if len(data) == 0:
+            print >>sys.stderr, "%s: error: no ping data"%(sys.argv[0])
+            sys.exit(1)
 
-    ax.scatter(xaxis, qlens, lw=2)
-    ax.xaxis.set_major_locator(MaxNLocator(4))
+        xaxis = map(float, col(0, data))
+        start_time = xaxis[0]
+        xaxis = map(lambda x: (x - start_time) / args.freq, xaxis)
+        qlens = map(float, col(1, data))
 
-plt.ylabel("RTT (ms)")
-plt.grid(True)
+        ax.scatter(xaxis, qlens, lw=2)
+        ax.xaxis.set_major_locator(MaxNLocator(4))
 
-if args.out:
-    plt.savefig(args.out)
+    plt.ylabel("RTT (ms)")
+    plt.grid(True)
+
+    if args.out:
+        plt.savefig(args.out)
+    else:
+        plt.show()
+
 else:
-    plt.show()
+    m.rc('figure', figsize=(16, 6))
+    fig = figure()
+    ax = fig.add_subplot(111)
+    for i, f in enumerate(args.files):
+        data = parse_download(f)
+        if len(data) == 0:
+            print >>sys.stderr, "%s: error: no download data"%(sys.argv[0])
+            sys.exit(1)
+
+        xaxis = map(float, col(0, data))
+        start_time = xaxis[0]
+        xaxis = map(lambda x: (x - start_time) / args.freq, xaxis)
+        qlens = map(float, col(1, data))
+
+        ax.scatter(xaxis, qlens, lw=2)
+        ax.xaxis.set_major_locator(MaxNLocator(4))
+
+    plt.ylabel("Download Times")
+    plt.grid(True)
+
+    if args.out:
+        plt.savefig(args.out)
+    else:
+        plt.show()

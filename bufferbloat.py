@@ -213,7 +213,7 @@ def bufferbloat():
 
     for curl in curls:
         download=curl.communicate()[0]
-        downloads.append(download)
+        downloads.append(float(download))
     f = open("%s/download.txt"%args.dir, "w")
     f.writelines("%f\n"%download for download in downloads)
     f.close()

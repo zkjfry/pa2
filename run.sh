@@ -16,6 +16,7 @@ modprobe tcp_probe
 # make sure we don't use a cached cwnd
 sysctl -w net.ipv4.tcp_no_metrics_save=1
 
+# added 5 in the set
 for qsize in 5 20 100; do
     dir=bb-q$qsize
 
@@ -24,6 +25,7 @@ for qsize in 5 20 100; do
     # TODO: Ensure the input file names match the ones you use in
     # bufferbloat.py script.  Also ensure the plot file names match
     # the required naming convsention when submitting your tarball.
+    # added a command that plots download.png
     python plot_tcpprobe.py -f $dir/cwnd.txt -o $dir/cwnd-iperf.png -p $iperf_port
     python plot_queue.py -f $dir/q.txt -o $dir/q.png
     python plot_ping.py -f $dir/ping.txt -o $dir/rtt.png -t "ping"

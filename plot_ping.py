@@ -20,6 +20,8 @@ parser.add_argument('--freq',
                     type=int,
                     default=10)
 
+# Since we shouldn't add another file for plotting download time I have the code here, and added 2 arguments to
+# distinguish the plots
 parser.add_argument('--down', '-d',
                     help="Download times",
                     type=float,
@@ -66,6 +68,7 @@ def parse_download(fname):
             break
     return ret
 
+# plotting q.png
 if args.type == "ping":
     m.rc('figure', figsize=(16, 6))
     fig = figure()
@@ -92,6 +95,7 @@ if args.type == "ping":
     else:
         plt.show()
 
+# Plotting download.png
 else:
     m.rc('figure', figsize=(16, 6))
     fig = figure()

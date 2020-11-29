@@ -214,7 +214,7 @@ def bufferbloat():
         sleep(2)
 
     f = open("%s/download.txt"%args.dir, "w")
-    f.writelines("\n"%f for download in downloads)
+    f.writelines("%f\n"%download for download in downloads)
     f.close()
     # TODO: compute average (and standard deviation) of the fetch
     # times.  You don't need to plot them.  Just note it in your

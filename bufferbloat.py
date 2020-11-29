@@ -82,8 +82,15 @@ class BBTopo(Topo):
         switch = self.addSwitch('s0')
 
         # TODO: Add links with appropriate characteristics
-        self.addLink(hosts[0], switch, bw=args.bw_host, delay='%sms' % args.delay, max_queue_size=args.maxq)
-        self.addLink(switch, hosts[1], bw=args.bw_net, delay='%sms' % args.delay, max_queue_size=args.maxq)
+        delay = args.delay
+        bw_host = args.bw_host
+        bw_net = args.bw_net
+        maxq = args.maxq
+
+        #adding link from host h1 to the switch s0
+        self.addLink(hosts[0], switch, bw=bw_host, delay='%sms' % delay, max_queue_size=maxq)
+        #adding link from switch s0 to host h2
+        self.addLink(switch, hosts[1], bw=bw_net, delay='%sms' % delay, max_queue_size=maxq)
 
 # Simple wrappers around monitoring utilities.  You are welcome to
 # contribute neatly written (using classes) monitoring scripts for
@@ -207,7 +214,7 @@ def bufferbloat():
         print("%.1fs left..." % (args.time - delta))
 
         # Downloaded to h2, download time raw data appended to a list
-        curls.append(h2.popen('curl -o /dev/null -s -w %%{time_total} %s/http/index.html' % h1.IP()).communicate()[0])
+        curls.append(h2.popen('curl -o /dev/null -s -w %%{time_total} %s/http/index.html' % h1.IP()))
 
     # Processing raw data of download time
     for curl in curls:

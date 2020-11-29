@@ -199,6 +199,7 @@ def bufferbloat():
     h1 = net.get('h1')
     h2 = net.get('h2')
     downloads = []
+    curls = []
     while True:
         # do the measurement (say) 3 times.
         sleep(2)
@@ -208,9 +209,11 @@ def bufferbloat():
             break
         print("%.1fs left..." % (args.time - delta))
 
-        download = h2.popen('curl -o /dev/null -s -w %%{time_total} %s/http/index.html' % h1.IP()).communicate()[0]
-        downloads.append(float(download))
+        curls.append(h2.popen('curl -o /dev/null -s -w %%{time_total} %s/http/index.html' % h1.IP()))
 
+    for curl in curls:
+        download=curl.communicate()[0]
+        downloads.append(download)
     f = open("%s/download.txt"%args.dir, "w")
     f.writelines("%f\n"%download for download in downloads)
     f.close()

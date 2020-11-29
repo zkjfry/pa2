@@ -59,13 +59,11 @@ def parse_download(fname):
     num = 0
     for line in lines:
         try:
-            download = line.split(' ')[-2]
-            download = download.split('=')[1]
-            download = float(download)
-            print(download)
+            download = float(line)
             ret.append([num, download])
             num += 1
         except:
+	    print("breaking")
             break
     return ret
 

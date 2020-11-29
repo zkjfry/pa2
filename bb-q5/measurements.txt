@@ -1,1 +1,1 @@
-Average: 0.482861, std deviation: 0.237530
+Average: 0.463621, std deviation: 0.226335

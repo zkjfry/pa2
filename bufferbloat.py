@@ -201,9 +201,9 @@ def bufferbloat():
     downloads = []
     while True:
         # do the measurement (say) 3 times.
+        sleep(2)
         now = time()
         delta = now - start_time
-
         if delta > args.time:
             break
         print("%.1fs left..." % (args.time - delta))
@@ -211,11 +211,10 @@ def bufferbloat():
         download = h2.popen('curl -o /dev/null -s -w %%{time_total} %s/http/index.html' % h1.IP()).communicate()[0]
         downloads.append(float(download))
 
-        sleep(2)
-
     f = open("%s/download.txt"%args.dir, "w")
     f.writelines("%f\n"%download for download in downloads)
     f.close()
+
     # TODO: compute average (and standard deviation) of the fetch
     # times.  You don't need to plot them.  Just note it in your
     # README and explain.

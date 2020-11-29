@@ -122,6 +122,7 @@ def start_iperf(net):
     # TODO: Start the iperf client on h1.  Ensure that you create a
     # long lived TCP flow. You may need to redirect iperf's stdout to avoid blocking.
     h1 = net.get('h1')
+    # Starting TCP flow with iperf
     h1.popen("iperf -t %s -c %s -w 16m" % (args.time, h2.IP()))
 
 def start_webserver(net):
@@ -143,6 +144,7 @@ def start_ping(net):
     # redirecting stdout
     h1 = net.get('h1')
     h2 = net.get('h2')
+    #start pinging and storing data in ping.txt
     popen = h1.popen("ping -c %s -i 0.1 %s > %s/ping.txt"%(args.time * 10, h2.IP(), args.dir), shell=True)
 
 def bufferbloat():
@@ -202,19 +204,24 @@ def bufferbloat():
     downloads = []
     curls = []
     while True:
-        # do the measurement (say) 3 times.
+        # Downloading every 2 seconds so sleep for 2 seconds
         sleep(2)
         now = time()
         delta = now - start_time
+        # Finishing 60 seconds
         if delta > args.time:
             break
         print("%.1fs left..." % (args.time - delta))
 
+        # Downloaded to h2, download time raw data appended to a list
         curls.append(h2.popen('curl -o /dev/null -s -w %%{time_total} %s/http/index.html' % h1.IP()))
 
+    # Processing raw data of download time
     for curl in curls:
         download = curl.communicate()[0]
         downloads.append(float(download))
+
+    # Writing download data to a text file as floats for plotting purposes
     f = open("%s/download.txt"%args.dir, "w")
     f.writelines("%f\n"%download for download in downloads)
     f.close()

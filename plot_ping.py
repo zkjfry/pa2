@@ -58,8 +58,6 @@ def parse_download(fname):
     lines = open(fname).readlines()
     num = 0
     for line in lines:
-        if 'bytes from' not in line:
-            continue
         try:
             download = line.split(' ')[-2]
             download = download.split('=')[1]

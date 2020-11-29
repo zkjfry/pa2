@@ -25,10 +25,10 @@ parser.add_argument('--down', '-d',
                     type=float,
                     default=10)
 
-parser.add_argument('--type',
+parser.add_argument('--type', '-t',
                     help="download or ping",
                     type=str,
-                    default='ping')
+                    required=True)
 
 parser.add_argument('--out', '-o',
                     help="Output png file for the plot.",

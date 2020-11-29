@@ -64,6 +64,7 @@ def parse_download(fname):
             download = line.split(' ')[-2]
             download = download.split('=')[1]
             download = float(download)
+            print(download)
             ret.append([num, download])
             num += 1
         except:

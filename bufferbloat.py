@@ -177,11 +177,12 @@ def bufferbloat():
     # qmon = None
 
     # TODO: Start iperf, webservers, etc.
-    iperf_proc = Process(target=start_iperf, args=(net,))
-    ping_proc = Process(target=start_ping, args=(net,))
-    iperf_proc.start()
-    ping_proc.start()
-    start_webserver(net)
+    iperf = Process(target=start_iperf, args=(net,))
+    ping = Process(target=start_ping, args=(net,))
+    web = Process(target=start_webserver, args=(net,))
+    iperf.start()
+    ping.start()
+    web.start()
     # Hint: The command below invokes a CLI which you can use to
     # debug.  It allows you to run arbitrary commands inside your
     # emulated hosts h1 and h2.
@@ -212,7 +213,7 @@ def bufferbloat():
         curls.append(h2.popen('curl -o /dev/null -s -w %%{time_total} %s/http/index.html' % h1.IP()))
 
     for curl in curls:
-        download=curl.communicate()[0]
+        download = curl.communicate()[0]
         downloads.append(float(download))
     f = open("%s/download.txt"%args.dir, "w")
     f.writelines("%f\n"%download for download in downloads)

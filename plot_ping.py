@@ -63,7 +63,6 @@ def parse_download(fname):
             ret.append([num, download])
             num += 1
         except:
-	    print("breaking")
             break
     return ret
 

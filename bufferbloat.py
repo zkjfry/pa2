@@ -201,14 +201,17 @@ def bufferbloat():
     downloads = []
     while True:
         # do the measurement (say) 3 times.
-        sleep(1)
         now = time()
         delta = now - start_time
+
         if delta > args.time:
             break
         print("%.1fs left..." % (args.time - delta))
+
         download = h2.popen('curl -o /dev/null -s -w %%{time_total} %s/http/index.html' % h1.IP()).communicate()[0]
         downloads.append(float(download))
+
+        sleep(2)
 
     f = open("%s/download.txt"%args.dir, "w")
     f.writelines("\n"%f for download in downloads)
